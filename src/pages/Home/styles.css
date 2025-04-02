@@ -1,0 +1,13 @@
+.home__wrapper {
+  padding: 20px;
+  background-color: var(--milk);
+  width: 100%;
+  height: 100%;
+}
+
+.home__content {
+  width: 100%;
+  height: 100%;
+  background-color: var(--white);
+  border-radius: 6px;
+}
