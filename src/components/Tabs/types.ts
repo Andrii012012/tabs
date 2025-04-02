@@ -6,5 +6,5 @@ export interface ITabs {
   name: string;
   icon: ReactNode;
   url: string | null;
-  children?: ITabs;
+  children?: ITabs[];
 }

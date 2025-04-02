@@ -7,6 +7,7 @@ import { ReactComponent as IconBox } from '../../assets/svg/pinned.svg';
 import { Popup } from '../Popup/Popup';
 import { ReactComponent as IconCancel } from '../../assets/svg/cancel.svg';
 import { ReactComponent as IconArrow } from '../../assets/svg/arrow.svg';
+import { NavLink } from 'react-router-dom';
 
 export function Tabs() {
 
@@ -21,6 +22,8 @@ export function Tabs() {
     const [tabsPopup, setTabsPopup] = useState<ITabs[]>([]);
 
     const refList = useRef<React.MouseEvent<HTMLUListElement, MouseEvent> | null>(null);
+
+    const [storage, setStorage] = useState([{ icon: <IconBox />, name: "Lagerverwaltung" }]);
 
     function handleDragStart(event: React.MouseEvent, item: ITabs) {
         setCurrentItem(item);
@@ -58,18 +61,20 @@ export function Tabs() {
     }
 
     useEffect(() => {
-        function handleResize(event: UIEvent) {
+        function handleResize() {
 
-            if (refBody.current instanceof HTMLElement) {
-                const width = refBody.current.offsetWidth;
-                const children = refBody.current.children[0].children;
+            function checkWidth(children: HTMLCollection): number {
                 let widthAllElements = 0;
 
                 for (let index = 0; index < children.length; index++) {
                     widthAllElements += children[index].getBoundingClientRect().width;
                 };
 
-                if (width < widthAllElements) {
+                return widthAllElements;
+            }
+
+            function check(width: number, children: HTMLCollection, pluseWidth = 0) {
+                if (width + pluseWidth < checkWidth(children)) {
                     setTabs(prevState => {
                         const newState = [...prevState];
                         const popElement = newState.pop();
@@ -86,17 +91,25 @@ export function Tabs() {
                         }
                         return newState;
                     });
+                    if (width <= checkWidth(children)) check(width, children, pluseWidth + 150);
                 }
+            }
 
+            if (refBody.current instanceof HTMLElement) {
+                const width = refBody.current.offsetWidth;
+                const children = refBody.current.children[0].children;
+                check(width, children);
             }
         }
+
+        handleResize();
 
         window.addEventListener('resize', handleResize);
 
         return () => {
             window.removeEventListener("resize", handleResize);
         };
-    }, []);
+    }, [refBody.current, tabsPopup]);
 
 
     function handleRemoveTabPopup(id: number): void {
@@ -120,6 +133,14 @@ export function Tabs() {
             <div className='tabs__body'>
                 <div className='tabs__box'>
                     <IconBox />
+                    <Popup className='tabs__box-popup'>
+                        <ul>{storage.map((item, _) => (
+                            <li className='tabs__box-popup-item'>
+                                {item.icon}
+                                {item.name}
+                            </li>
+                        ))}</ul>
+                    </Popup>
                 </div>
                 <div style={{ width: '100%' }} ref={refBody}>
                     <ul className='tabs__list' onMouseMove={(event) => refList.current = event}>
@@ -130,11 +151,23 @@ export function Tabs() {
                                 onDrop={(event) => handleDragDrop(event, item)}
                                 draggable={true}
                                 key={item.id} className='tabs__item'>
-                                {item.icon}
-                                {item.name}
-                                <div onClick={() => handleRemoveTab(item.id)}>
-                                    <IconCancel />
-                                </div>
+                                <NavLink to={`/${item.url}`} className={({ isActive }) => isActive ? 'activePath' : ""}>
+                                    {item.icon}
+                                    {item.name}
+                                    <div onClick={() => handleRemoveTab(item.id)}>
+                                        <IconCancel />
+                                    </div>
+                                    {Array.isArray(item.children) && item.children?.length > 0 && <Popup>
+                                        <ul className={`nested-list`}>
+                                            {item.children.map((item, _) => (
+                                                <li className='nested-list__item'>
+                                                    {item.icon}
+                                                    {item.name}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </Popup>}
+                                </NavLink>
                             </li>
                         ))}
                     </ul>
