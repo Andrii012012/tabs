@@ -91,8 +91,29 @@ export function Tabs() {
                         }
                         return newState;
                     });
-                    if (width <= checkWidth(children)) check(width, children, pluseWidth + 150);
+
+                    if (width <= checkWidth(children)) check(width, children, pluseWidth + 20);
                 }
+
+                if ((width - 150) >= checkWidth(children)) {
+                    setTabsPopup(prevState => {
+                        const newState = [...prevState];
+                        const popElement = newState.shift();
+                        if (popElement) {
+                            setTabs((prevState) => {
+                                const newState = [...prevState];
+
+                                if (!newState.find((item) => item.id === popElement.id)) {
+                                    newState.push(popElement);
+                                }
+
+                                return newState;
+                            });
+                        }
+                        return newState;
+                    });
+                }
+
             }
 
             if (refBody.current instanceof HTMLElement) {
@@ -109,7 +130,7 @@ export function Tabs() {
         return () => {
             window.removeEventListener("resize", handleResize);
         };
-    }, [refBody.current, tabsPopup]);
+    }, [refBody.current, tabs.length]);
 
 
     function handleRemoveTabPopup(id: number): void {
@@ -155,7 +176,7 @@ export function Tabs() {
                                     {item.icon}
                                     {item.name}
                                     <div onClick={() => handleRemoveTab(item.id)}>
-                                        <IconCancel />
+                                        <IconCancel className='button-delete' />
                                     </div>
                                     {Array.isArray(item.children) && item.children?.length > 0 && <Popup>
                                         <ul className={`nested-list`}>
