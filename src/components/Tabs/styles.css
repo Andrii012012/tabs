@@ -3,13 +3,35 @@
 }
 
 .tabs__tabs {
-  width: 36px;
-  height: 48px;
-  background-color: var(--blue);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
+  transition: 0.3s linear;
+}
+
+.tabs__tabs:hover {
+  background-color: var(--blue);
+  transition: 0.3s linear;
+}
+
+.tabs__active {
+  background-color: var(--blue);
+}
+.tabs__tabs svg {
+  transition: 0.3s linear;
+}
+
+.tabs__active svg {
+  fill: var(--white);
+  transform: rotate(180deg);
+  transition: 0.3s linear;
+}
+
+.tabs__icon {
+  padding: 16px 13.5px;
+  fill: var(--dark);
 }
 
 .tabs__body {
@@ -28,6 +50,8 @@
 .tabs__list {
   display: flex;
   align-self: center;
+  position: relative;
+  width: 100%;
 }
 
 .tabs__item {
@@ -40,6 +64,17 @@
   color: var(--gray);
   position: relative;
   transition: 0.3s linear;
+}
+
+.tabs__item svg:last-child {
+  margin-left: 10px;
+  display: none;
+  fill: var(--tomato);
+}
+
+.tabs__item:hover svg:last-child {
+  margin-left: 10px;
+  display: block;
 }
 
 .tabs__item::before {
@@ -56,8 +91,8 @@
 
 .tabs__item:hover {
   transition: 0.3s linear;
-  background-color: var(--gray);
-  color: var(--white);
+  background-color: var(--powder-blue);
+  color: var(--dark);
 }
 
 .tabs__item:hover svg {
@@ -76,4 +111,40 @@
 .tabs__box:hover {
   transition: 0.3s linear;
   background-color: var(--light-gray);
+}
+
+.tabs__popup {
+  top: 100%;
+  right: 0%;
+  background-color: var(--white);
+  padding: 0 15px;
+}
+
+.tabs__item-popup {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--gray);
+  display: flex;
+  font-weight: 14px;
+  align-items: center;
+  color: var(--gray);
+}
+
+.tabs__item-popup:hover {
+  color: var(--dark);
+}
+
+.tabs__item-popup:last-child {
+  border-bottom: 0px solid var(--gray);
+}
+
+.tabs__item-popup p {
+  flex: 1 1 auto;
+}
+
+.tabs__item-popup svg:first-child {
+  margin-right: 10px;
+}
+
+.tabs__item-popup svg:last-child {
+  margin-left: 10px;
 }
